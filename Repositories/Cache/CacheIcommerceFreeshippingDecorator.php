@@ -2,8 +2,8 @@
 
 namespace Modules\Icommercefreeshipping\Repositories\Cache;
 
-use Modules\Icommercefreeshipping\Repositories\IcommerceFreeshippingRepository;
 use Modules\Core\Repositories\Cache\BaseCacheDecorator;
+use Modules\Icommercefreeshipping\Repositories\IcommerceFreeshippingRepository;
 
 class CacheIcommerceFreeshippingDecorator extends BaseCacheDecorator implements IcommerceFreeshippingRepository
 {
@@ -14,23 +14,15 @@ class CacheIcommerceFreeshippingDecorator extends BaseCacheDecorator implements 
         $this->repository = $icommercefreeshipping;
     }
 
-     /**
+    /**
      * List or resources
      *
      * @return mixed
      */
-    public function calculate($parameters,$conf)
+    public function calculate($parameters, $conf)
     {
-        return $this->remember(function () use ($parameters,$conf) {
-            return $this->repository->calculate($parameters,$conf);
+        return $this->remember(function () use ($parameters, $conf) {
+            return $this->repository->calculate($parameters, $conf);
         });
     }
-
-    public function getResult($items,$conf)
-    {
-        return $this->remember(function () use ($items,$conf) {
-            return $this->repository->getResult($items,$conf);
-        });
-    }
-    
 }

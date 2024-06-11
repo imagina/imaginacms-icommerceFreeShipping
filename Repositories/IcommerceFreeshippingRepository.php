@@ -6,9 +6,5 @@ use Modules\Core\Repositories\BaseRepository;
 
 interface IcommerceFreeshippingRepository extends BaseRepository
 {
-
-    public function calculate($parameters,$conf);
-
-    public function getResult($items,$conf);
-    
+    public function calculate($parameters, $conf);
 }

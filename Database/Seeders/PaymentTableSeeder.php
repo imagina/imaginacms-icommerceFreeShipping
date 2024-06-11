@@ -2,54 +2,52 @@
 
 namespace Modules\Icommercefreeshipping\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 use Modules\Icommerce\Entities\ShippingMethod;
 
 class PaymentTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         Model::unguard();
 
-        $options['init'] = "Modules\Icommercefreeshipping\Http\Controllers\Api\IcommerceFreeshippingApiController";
-        $options['minimum'] = "";
-        
-        $titleTrans = 'icommercefreeshipping::icommercefreeshippings.single';
-        $descriptionTrans = 'icommercefreeshipping::icommercefreeshippings.description';
+        $name = config('asgard.icommercefreeshipping.config.shippingName');
+        $result = ShippingMethod::where('name', $name)->first();
 
-        foreach (['en', 'es'] as $locale) {
+        if (! $result) {
+            $options['init'] = "Modules\Icommercefreeshipping\Http\Controllers\Api\IcommerceFreeshippingApiController";
+            $options['minimum'] = 0;
 
-            if($locale=='en'){
-                $params = array(
-                    'title' => trans($titleTrans),
-                    'description' => trans($descriptionTrans),
-                    'name' => config('asgard.icommercefreeshipping.config.shippingName'),
-                    'status' => 0,
-                    'options' => $options
-                );
+            $titleTrans = 'icommercefreeshipping::icommercefreeshippings.single';
+            $descriptionTrans = 'icommercefreeshipping::icommercefreeshippings.description';
 
-                $shippingMethod = ShippingMethod::create($params);
-                
-            }else{
+            foreach (['en', 'es'] as $locale) {
+                if ($locale == 'en') {
+                    $params = [
+                        'title' => trans($titleTrans),
+                        'description' => trans($descriptionTrans),
+                        'name' => $name,
+                        'status' => 1,
+                        'options' => $options,
+                    ];
 
-                $title = trans($titleTrans,[],$locale);
-                $description = trans($descriptionTrans,[],$locale);
+                    $shippingMethod = ShippingMethod::create($params);
+                } else {
+                    $title = trans($titleTrans, [], $locale);
+                    $description = trans($descriptionTrans, [], $locale);
 
-                $shippingMethod->translateOrNew($locale)->title = $title;
-                $shippingMethod->translateOrNew($locale)->description = $description;
+                    $shippingMethod->translateOrNew($locale)->title = $title;
+                    $shippingMethod->translateOrNew($locale)->description = $description;
 
-                $shippingMethod->save();
-
-            }
-        }// Foreach
-            
-
-       
+                    $shippingMethod->save();
+                }
+            }// Foreach
+        } else {
+            $this->command->alert('This method has already been installed !!');
+        }
     }
 }
